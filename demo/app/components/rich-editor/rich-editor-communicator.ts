@@ -14,7 +14,6 @@ export class RichEditorCommunicator {
     private callbackTimeout: number,
     ...boundHandlers: BoundMessageHandler[]
   ) {
-    for (let i = 0; i < boundHandlers.length; i++) {}
     boundHandlers.map((h) => this.handleIncomingOnce(h));
   }
 

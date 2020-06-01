@@ -1,118 +1,90 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * Generated with the TypeScript template
- * https://github.com/react-native-community/react-native-template-typescript
- *
- * @format
- */
-
-import React from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
-  ScrollView,
   View,
-  Text,
   StatusBar,
+  Button,
+  Text,
+  Alert,
+  StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
-
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-declare const global: {HermesInternal: null | {}};
+import {RichEditor} from './app/components/rich-editor/rich-editor';
+import {RichEditorApi} from './app/components/rich-editor/rich-editor.props';
 
 const App = () => {
+  const initialHtml = '<b>Formatted Text</b> Initial Value';
+  const initialPlaceholder = 'Type here...';
+  const [richEditorApi, setRichEditorApi] = useState<RichEditorApi>();
+  const setDate = () => {
+    if (typeof richEditorApi !== 'undefined') {
+      richEditorApi.setHtml(
+        `<i>Current date:</i> <b>${new Date().toISOString()}</b>`,
+      );
+    }
+  };
+  const readHtml = async () => {
+    if (typeof richEditorApi !== 'undefined') {
+      const html = await richEditorApi.getHtml();
+      Alert.alert(html);
+    }
+  };
+  const bold = () => {
+    if (typeof richEditorApi !== 'undefined') {
+      richEditorApi.bold();
+    }
+  };
+  const italic = () => {
+    if (typeof richEditorApi !== 'undefined') {
+      richEditorApi.italic();
+    }
+  };
+  const underline = () => {
+    if (typeof richEditorApi !== 'undefined') {
+      richEditorApi.underline();
+    }
+  };
   return (
     <>
       <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.tsx</Text> to change
-                this screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
+      <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
+          <RichEditor
+            initialHtml={initialHtml}
+            initialPlaceholder={initialPlaceholder}
+            onInitialized={(api) => {
+              setRichEditorApi(api);
+            }}></RichEditor>
+          <View style={styles.row}>
+            <TouchableOpacity onPress={() => bold()}>
+              <Text style={styles.bold}>Bold</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => italic()}>
+              <Text style={styles.italic}>Italic</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => underline()}>
+              <Text style={styles.underline}>Underline</Text>
+            </TouchableOpacity>
           </View>
-        </ScrollView>
+          <Button title="SET DATE" onPress={setDate}></Button>
+          <Button title="READ HTML" onPress={readHtml}></Button>
+        </View>
       </SafeAreaView>
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-});
-
 export default App;
+
+const styles = {
+  ...StyleSheet.create({
+    container: {flex: 1},
+    row: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      paddingBottom: 36,
+    },
+    bold: {fontWeight: 'bold'},
+    italic: {fontStyle: 'italic'},
+    underline: {textDecorationLine: 'underline'},
+  }),
+};

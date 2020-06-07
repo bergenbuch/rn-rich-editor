@@ -130,9 +130,6 @@ export const RichtEditorHtml = `<!DOCTYPE html>
           plugMessagesFromWebView(content, exports);
           var message = function (event) {
             var messageData = JSON.parse(event.data);
-            setTimeout(function () {
-              alert(event.data);
-            }, 100);
             exports.messagesFromWebView[messageData.name](messageData.data);
           };
           var onMessage = function (event) {
